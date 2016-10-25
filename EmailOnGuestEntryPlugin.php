@@ -59,7 +59,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             foreach ($entryModel->getFieldLayout()->getFields() as $fieldLayout)
             {
                 $field = $fieldLayout->getField();
-                $email->body .= $field->__toString() . ": " . $entryModel->{$field->handle} . "\n";
+                $email->body .= $field->__toString() . ": \n " . $entryModel->{$field->handle} . "\n \n";
             }
             $email->htmlBody = nl2br($email->body);
 
