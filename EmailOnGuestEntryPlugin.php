@@ -48,7 +48,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             $email              = new EmailModel;
             $email->toFirstName = $entryModel->getAuthor()->firstName;
             $email->toLastName  = $entryModel->getAuthor()->lastName;
-            $email->toEmail     = $entryModel->getAuthor()->email;
+            $email->toEmail     = $entryModel->toEmail ?? $entryModel->getAuthor()->email;
             $email->fromEmail   = $emailSettings['emailAddress'];
             $email->replyTo     = $entryModel->contactFormEmail ?? $emailSettings['emailAddress'];
             $email->sender      = $emailSettings['emailAddress'];
