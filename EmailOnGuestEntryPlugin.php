@@ -34,8 +34,11 @@ class EmailOnGuestEntryPlugin extends BasePlugin
     }
 
     /**
-     * Sends an email to admin when the contact form entry's been saved.
-     * It'll send to whoever the guest entry user is set to in the CMS
+     * This is why comments are a bad idea in code, they're always out of date. Let's try again anyway.
+     * This builds and sends a notification email to the email address given as the field in the entry with
+     * the handle of 'toEmail' and if that field doesn't exist it sends it to the person set as the author
+     * for GuestEntries in that section. It uses null coalescence so needs PHP7 folks. Yes I could make it
+     * support lower PHP versions but if I did that what would you learn?
      */
     public function init()
     {
