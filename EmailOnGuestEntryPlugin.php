@@ -10,7 +10,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.0';
+        return '1.0.1';
     }
 
     /**
@@ -47,13 +47,24 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             /** @var EntryModel $entryModel */
             $entryModel = $event->params['entry'];
 
-            $emailSettings      = craft()->email->getSettings();
-            $email              = new EmailModel;
+            $emailSettings = craft()->email->getSettings();
+            $email         = new EmailModel;
+
+            // send copy of email to the user
+            if ($entryModel->sendCopyToUser)
+            {
+                $email->cc = [
+                    [
+                        'name'  => '',
+                        'email' => $entryModel->contatFormEmail,
+                    ],
+                ];
+            }
             $email->toFirstName = $entryModel->getAuthor()->firstName;
             $email->toLastName  = $entryModel->getAuthor()->lastName;
             $email->toEmail     = $entryModel->toEmail ?? $entryModel->getAuthor()->email;
             $email->fromEmail   = $emailSettings['emailAddress'];
-            $email->replyTo     = $entryModel->contactFormEmail ?? $emailSettings['emailAddress'];
+            $email->replyTo     = $entryModel->email ?? $emailSettings['emailAddress'];
             $email->sender      = $emailSettings['emailAddress'];
             $email->fromName    = $entryModel->contactFormName ?? 'Contact Form';
             $email->subject     = "New Contact Form Submitted";
@@ -62,9 +73,27 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             foreach ($entryModel->getFieldLayout()->getFields() as $fieldLayout)
             {
                 $field = $fieldLayout->getField();
-                $email->body .= $field->__toString() . ": \n " . $entryModel->{$field->handle} . "\n \n";
+                if ($field->getFieldType()->getName() == Craft::t('Lightswitch'))
+                {
+                    $value = ($entryModel->{$field->handle}) ? "Yes" : "No";
+                } elseif ($field->getFieldType()->getName() == Craft::t('Checkboxes'))
+                {
+                    $values = [];
+                    foreach ($entryModel->{$field->handle}->getOptions() as $option)
+                    {
+                        if ($option->selected)
+                        {
+                            $values[] = $option->label;
+                        }
+                    }
+                    $value = implode(", ", $values);
+                } else
+                {
+                    $value = $entryModel->{$field->handle};
+                }
+                $email->body .= $field->__toString() . ": \n" . $value . "\n \n";
+                $email->htmlBody .= "<strong>{$field->__toString()}</strong><br><pre>{$value}</pre><br>\n";
             }
-            $email->htmlBody = nl2br($email->body);
 
             craft()->email->sendEmail($email);
         });
