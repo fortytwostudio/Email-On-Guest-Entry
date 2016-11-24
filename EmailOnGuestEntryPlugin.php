@@ -56,7 +56,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
                 $email->cc = [
                     [
                         'name'  => '',
-                        'email' => $entryModel->contatFormEmail,
+                        'email' => $entryModel->contactFormEmail,
                     ],
                 ];
             }
@@ -64,7 +64,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             $email->toLastName  = $entryModel->getAuthor()->lastName;
             $email->toEmail     = $entryModel->toEmail ?? $entryModel->getAuthor()->email;
             $email->fromEmail   = $emailSettings['emailAddress'];
-            $email->replyTo     = $entryModel->email ?? $emailSettings['emailAddress'];
+            $email->replyTo     = $entryModel->contactFormEmail ?? $emailSettings['emailAddress'];
             $email->sender      = $emailSettings['emailAddress'];
             $email->fromName    = $entryModel->contactFormName ?? 'Contact Form';
             $email->subject     = "New Contact Form Submitted";
