@@ -10,7 +10,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.1';
+        return '1.0.2';
     }
 
     /**
@@ -51,7 +51,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             $email         = new EmailModel;
 
             // send copy of email to the user
-            if ($entryModel->sendCopyToUser)
+            if (!empty($entryModel->sendCopyToUser))
             {
                 $email->cc = [
                     [
