@@ -1,11 +1,14 @@
 # Email-On-Guest-Entry
 CraftCMS plugin that emails the "author" of the guestentry when a new guestentry is saved.
 
+## Requirements
+First, grab the [GuestEntries plugin](https://github.com/pixelandtonic/GuestEntries) and install as per it's instructions.
+
 ## How to use
-Place the emailonguestentry folder in your craft/plugins/ folder. Activate the plugin in your Craft plugin settings page.
+Place the emailonguestentry folder in your craft/plugins/ folder. Activate the plugin in your Craft plugin settings page. That's it. It listens for the GuestEntry plugin firing an event saying that an entry's been saved and automatically send the emails.
 
 ## Optional additional fields
-This plugin will listen for the following optional field handles in the submitted form.
+This plugin will handle the following optional field handles in the submitted form:
 
 - `contactFormName` -- This field represents the name of the person filling out the form. It'll put that in the fromName field in the email. Defaults to `siteName`.
 - `contactFormEmail` -- This field represents the email address of the person filling in the form. It'll use this in the replyTo field in the email. Defaults to the `emailAddress` from the Craft email settings.
