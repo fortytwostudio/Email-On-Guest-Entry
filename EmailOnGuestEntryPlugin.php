@@ -10,7 +10,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.2';
+        return '1.0.3';
     }
 
     /**
@@ -53,21 +53,21 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             // send copy of email to the user
             if (!empty($entryModel->sendCopyToUser))
             {
-                $email->cc = [
-                    [
+                $email->cc = array(
+                    array(
                         'name'  => '',
                         'email' => $entryModel->contactFormEmail,
-                    ],
-                ];
+                    ),
+                );
             }
             $email->toFirstName = $entryModel->getAuthor()->firstName;
             $email->toLastName  = $entryModel->getAuthor()->lastName;
-            $email->toEmail     = $entryModel->toEmail ?? $entryModel->getAuthor()->email;
+            $email->toEmail     = !empty($entryModel->toEmail) ? $entryModel->toEmail : $entryModel->getAuthor()->email;
             $email->fromEmail   = $emailSettings['emailAddress'];
-            $email->replyTo     = $entryModel->contactFormEmail ?? $emailSettings['emailAddress'];
+            $email->replyTo     = !empty($entryModel->contactFormEmail) ? $entryModel->contactFormEmail : $emailSettings['emailAddress'];
             $email->sender      = $emailSettings['emailAddress'];
-            $email->fromName    = $entryModel->contactFormName ?? 'Contact Form';
-            $email->subject     = "New Contact Form Submitted";
+            $email->fromName    = !empty($entryModel->contactFormName) ? $entryModel->contactFormName : craft()->config->get('siteName');
+            $email->subject     = craft()->config->get('siteName') . " - New {$entryModel->getType()} Received";
             $email->body        = "";
             /** @var FieldLayoutFieldModel $fieldLayout */
             foreach ($entryModel->getFieldLayout()->getFields() as $fieldLayout)
@@ -78,7 +78,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
                     $value = ($entryModel->{$field->handle}) ? "Yes" : "No";
                 } elseif ($field->getFieldType()->getName() == Craft::t('Checkboxes'))
                 {
-                    $values = [];
+                    $values = array();
                     foreach ($entryModel->{$field->handle}->getOptions() as $option)
                     {
                         if ($option->selected)
