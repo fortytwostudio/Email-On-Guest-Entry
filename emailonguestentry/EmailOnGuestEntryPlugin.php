@@ -10,7 +10,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
      */
     public function getVersion()
     {
-        return '1.0.3';
+        return '1.0.4';
     }
 
     /**
@@ -67,7 +67,7 @@ class EmailOnGuestEntryPlugin extends BasePlugin
             $email->replyTo     = !empty($entryModel->contactFormEmail) ? $entryModel->contactFormEmail : $emailSettings['emailAddress'];
             $email->sender      = $emailSettings['emailAddress'];
             $email->fromName    = !empty($entryModel->contactFormName) ? $entryModel->contactFormName : craft()->config->get('siteName');
-            $email->subject     = craft()->config->get('siteName') . " - New {$entryModel->getType()} Received";
+            $email->subject     = craft()->config->get('siteName') . " - New {$entryModel->getType()->name} Received";
             $email->body        = "";
             /** @var FieldLayoutFieldModel $fieldLayout */
             foreach ($entryModel->getFieldLayout()->getFields() as $fieldLayout)
